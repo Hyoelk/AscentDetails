@@ -49,10 +49,16 @@ public partial class Plugin : BaseUnityPlugin
         self.ascentData.ascents[Ascents.currentAscent + 1].description = "Hunger grows "+ getNegativePercentage(Ascents.hungerRateMultiplier - 1f) + " faster.";
 
         Ascents.currentAscent = 3;
-        self.ascentData.ascents[Ascents.currentAscent + 1].description = "Items have their weight increased by <color=#EF2E49>"+Ascents.itemWeightModifier+"</color>, equivalent to an extra apple for every item carried";
+        self.ascentData.ascents[Ascents.currentAscent + 1].description = "Items have their weight increased by "+ printAsRed(Ascents.itemWeightModifier.ToString())+", equivalent to an extra apple for every item carried.";
 
         Ascents.currentAscent = 5;
-        self.ascentData.ascents[Ascents.currentAscent + 1].description = "The night is cold, as if within medium cover in a snowstorm.";
+        float percentage = Ascents.nightColdRate * 100;
+        float seconds = 1;
+        while (percentage < 1f) {
+            percentage *= 10;
+            seconds *= 10;
+        }
+        self.ascentData.ascents[Ascents.currentAscent + 1].description = "While in the night, get " + getNegativePercentage(percentage / 100) + " cold every " + printSeconds(seconds) +".";
 
         Ascents.currentAscent = 6;
         self.ascentData.ascents[Ascents.currentAscent + 1].description = " Climbing takes additional "+ getNegativePercentage (Ascents.climbStaminaMultiplier - 1f) + " stamina.";
@@ -62,11 +68,33 @@ public partial class Plugin : BaseUnityPlugin
 
     private string getPositivePercentage(float percentage)
     {
-        return "<color=#49EF2E>" + percentage * 100 + "</color>%";
+        return printAsGreen((percentage * 100).ToString()) + "%";
     }
 
     private string getNegativePercentage(float percentage)
     {
-        return "<color=#EF2E49>" + percentage * 100 + "</color>%";
+        return printAsRed((percentage * 100).ToString()) + "%";
+    }
+
+    private string printSeconds(float seconds)
+    {
+        if (seconds < 1)
+            return printAsBlue("second");
+        return printAsBlue(seconds + " seconds");
+    }
+
+    private string printAsGreen(string text)
+    {
+        return "<color=#2DD911>" + text + "</color>";
+    }
+
+    private string printAsRed(string text)
+    {
+        return "<color=#EF2E49>" + text + "</color>";
+    }
+
+    private string printAsBlue(string text)
+    {
+        return "<color=#2e49ef>" + text + "</color>";
     }
 }
